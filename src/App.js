@@ -10,8 +10,7 @@ import {
 import "./App.css";
 function App() {
  const[toDo,setTodo] = useState([
-  {id : 1,"title":"Task 1","status":false},
-  {id:2,"title":"Task 2","status":false}
+  
  ])
 
  const[newTask,setNewTask] = useState('');
@@ -42,68 +41,83 @@ const deleteTask=(id)=>{
  }
 
 const cancelUpdate=()=>{
-
+  setUpdateData('');
 }
 const changeTask=(e)=>{
   let newEntry={
     id:updateData.id,
-    title:e.traget.value,
-    status:updateData.status?true:false
+    title:e.target.value,
+    status:updateData.status
   }
   setUpdateData(newEntry);
 
 }
 
+const updateTask=()=>{
+  let filterRecord=[...toDo].filter(task=>task.id!==updateData.id);
+  let updateObject =[...filterRecord,updateData]
+  setTodo(updateObject);
+  setUpdateData('');
+}
 
-  return (
+
+   return (
     <div className="container App">
     <br></br>
-    <h2>To Do List App(ReactJS)</h2>
+    <h2>To Do List App</h2>
     <br></br> 
-    <div className="row">
-      <div className="col">
-        <input 
-        className="form-control  form-control-lg"
-          value={updateData&&updateData.title}
-          onChange={(e)=>changeTask(e)}
-        />
-      </div>
-      <div className="col-auto">
-      <button 
-      className="btn btn-lg btn-success mr-20">
-        Update
-      </button>
-      <button 
-      className="btn btn-lg btn-warning">
-       Cancel
-      </button>
-      </div>
-    </div>
+    {updateData && updateData?(
+<>
+  <div className="row">
+  <div className="col">
+    <input 
+    className="form-control  form-control-lg"
+      value={updateData&&updateData.title}
+      onChange={(e)=>changeTask(e)}
+    />
+  </div>
+  <div className="col-auto">
+  <button 
+  onClick ={updateTask}
+  className="btn btn-lg btn-success mr-20">
+    Update
+  </button>
+  <button 
+  onClick={cancelUpdate}
+  className="btn btn-lg btn-warning">
+   Cancel
+  </button>
+  </div>
+</div>
+<br  />
+</>
+   ):(
+  <>
+  <div className="row">
+   <div className="col">
+     <input 
+     value={newTask}
+     onChange={(e)=>setNewTask(e.target.value)}
+     className="form-control  form-control-lg"/>
+   </div>
+   <div className="col-auto">
+   <button
+   onClick={addTask}
+   className="btn btn-lg btn-success">
+     Add Task
+   </button>
+   </div>
+ </div>
+ <br />
+</>
+)}
     
-    <br></br>
-    
-    
-    
-    
-    <div className="row">
-      <div className="col">
-        <input 
-        value={newTask}
-        onChange={(e)=>setNewTask(e.target.value)}
-        className="form-control  form-control-lg"/>
-      </div>
-      <div className="col-auto">
-      <button
-      onClick={addTask}
-      className="btn btn-lg btn-success">
-        Add Task
-      </button>
-      </div>
-    </div>
-   <br></br>
 
 
-    {toDo&&toDo.length?'':'No Tasks'}
+   <h4>
+    {toDo&&toDo.length?'':
+    'No tasks to be done! Yay 🥳'}
+    </h4>
     {toDo &&toDo 
     .sort((a,b)=>a.id>b.id?1:-1)
     .map ((task ,index)=>{
